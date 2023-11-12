@@ -8,7 +8,14 @@ const workM = new WorkManager.WorkManager() ;
 const wss = new WebSocketServer({ port: process.env.PORT });
 
 const connectedCompilers = [] ;
-const connectedEmitters = [] ;
+const emittersQueue = [] ; //TODO: implement queuing
+
+//returns compiler or false (if no compiler available)
+function getAvailableCompiler(){
+  const availables = connectedCompilers.filter( c => !c.busy ) ; 
+  if (availables.length === 0) return false ; //no compilers currently available
+  return availables[0] ; 
+}
 
 function heartbeat(){
   this.isAlive = true;
@@ -26,13 +33,13 @@ wss.on('connection', (ws) => {
       if(json.type == 'compiler'){
         console.log('compiler is connected, ', ws.id);
         ws.type = 'compiler' ;
+        ws.busy = false ; 
         connectedCompilers.push(ws) ;
         ws.send(JSON.stringify({command:'proceed'}));
       }
       else if(json.type == 'emitter'){
         console.log('emitter is connected, ', ws.id);
         ws.type = 'emitter' ;
-        connectedEmitters.push(ws);
         ws.send(JSON.stringify({command:'proceed'}));
       }
       else{
@@ -46,13 +53,11 @@ wss.on('connection', (ws) => {
         const {source} = json ;
         console.log(source);
         console.log('creating workorder');
-        //send work order
-        const compilerSocket = connectedCompilers[Math.floor(Math.random()*connectedCompilers.length)];
+        const compilerSocket = getAvailableCompiler() ; 
         workM.createWorkOrder(ws, compilerSocket, source);
       }
       if(ws.type == 'compiler'){
         const {workID, stdout, stderr} = json ;
-        //complete workorder
         workM.completeWorkOrder(workID, stdout, stderr) ;
       }
     }
@@ -67,12 +72,6 @@ wss.on('connection', (ws) => {
         if(index != -1)
           connectedCompilers.splice(index, 1) ;
     }
-    else if(ws.type == 'emitter'){
-        console.log('emitter disconnected') ;
-        const index = connectedEmitters.findIndex(socket => ws == socket) ;
-        if(index != -1)
-          connectedEmitters.splice(index, 1) ;
-    }
   }) ;
 
   const identifyResponseCheck = () => {
@@ -80,8 +79,8 @@ wss.on('connection', (ws) => {
   }
 
   ws.send(JSON.stringify({command: 'identify'}));
-
   setTimeout(identifyResponseCheck, 10000) ; //10 seconds delay to get identity type 
+
   console.log('client connected') ;
 
 });
