@@ -12,7 +12,7 @@ const compile = (source) => {
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
   fs.writeFileSync("./source/main.c", source);
-  
+
   child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${compile_command} `) ;
   child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${execute_command} `) ;
   const stdout = fs.readFileSync('./source/stdout').toString()
@@ -36,10 +36,13 @@ const connect = () => {
   ws.on('message', (msg) => {
     const json = JSON.parse(msg) ;
     switch(json.command){
-      case 'identify': ws.send(JSON.stringify({command:'identify', type: 'compiler'}));
+      case 'identify': console.log('server requesting identification') ;
+                       ws.send(JSON.stringify({command:'identify', type: 'compiler'}));
                        break;
-      case 'compile':  const {workID, data} = json ;
-                       console.log(workID, data) ;
+      case 'proceed':  console.log('identification succeeded'); break;
+      case 'compile':  console.log('server requesting a compilation') ;
+                       const {workID, data} = json ;
+                       console.log(workID, 'source code: ', data) ;
                        const {stdout, stderr} = compile(data) ;
                        ws.send(JSON.stringify({command:'compile', workID: workID, stdout: stdout, stderr: stderr})) ; 
                        break;
