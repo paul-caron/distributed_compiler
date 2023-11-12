@@ -1,6 +1,9 @@
 const {WebSocket} = require('ws');
 const fs = require('fs') ;
 const child_process = require('child_process') ;
+const dotenv = require("dotenv") ;
+dotenv.config();
+
 
 const compile = (source) => {
   const compile_command = ` clang -O1 -o ./source/main ./source/main.c 2> ./source/stderr 1> ./source/stdout` ;
@@ -20,7 +23,7 @@ const compile = (source) => {
 
 
 const connect = () => {
-  const ws = new WebSocket('ws://localhost:8080');
+  const ws = new WebSocket(`ws://${process.env.HOST}:${process.env.PORT}`);
 
   ws.on('error', e =>{
      console.error(e) ;

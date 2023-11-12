@@ -1,9 +1,11 @@
 const { WebSocketServer } = require('ws') ;
 const { v4 : uuidv4 } = require('uuid') ;
 const  WorkManager = require('./workmanager') ; 
+const dotenv = require('dotenv') ;
+dotenv.config() ;
 
 const workM = new WorkManager.WorkManager() ;
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: process.env.PORT });
 
 const connectedCompilers = [] ;
 const connectedEmitters = [] ;

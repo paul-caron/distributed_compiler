@@ -1,8 +1,9 @@
 const {WebSocket} = require('ws') ;
-
+const dotenv = require('dotenv') ;
+dotenv.config();
 
 const connect = async () => {
-   const ws = new WebSocket('ws://localhost:8080');
+   const ws = new WebSocket(`ws://${process.env.HOST}:${process.env.PORT}`);
 
    ws.on('error', e =>{
       console.error(e) ;
