@@ -15,9 +15,20 @@ chmod 777 install.sh
 
 ## run
 
+To start the server:
+
 ```sh
 (cd server/ && node index.js)
-(cd client/ && node index.js)
-(cd emitter/ && node index.js)
 ```
 
+To start a client compiler:
+
+```sh
+(cd client/ && node index.js)
+```
+
+To run the emitter for testing:
+
+```sh
+(cd emitter/ && node index.js)
+```
