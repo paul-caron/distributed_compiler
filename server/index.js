@@ -26,27 +26,29 @@ wss.on('connection', (ws) => {
       if(json.type == 'compiler'){
         console.log('compiler is connected, ', ws.id);
         ws.type = 'compiler' ;
-        connectedCompilers.push(ws) ; 
+        connectedCompilers.push(ws) ;
+        ws.send(JSON.stringify({command:'proceed'}));
       }
       else if(json.type == 'emitter'){
         console.log('emitter is connected, ', ws.id);
-        ws.type = 'emitter' ; 
+        ws.type = 'emitter' ;
         connectedEmitters.push(ws);
+        ws.send(JSON.stringify({command:'proceed'}));
       }
       else{
         console.log('abnormality is connected and connection will be closed');
-        ws.type = 'abnormal' ; 
-        ws.terminate() ; 
+        ws.type = 'abnormal' ;
+        ws.terminate() ;
       }
     }
     if(json.command == 'compile'){
       if(ws.type == 'emitter'){
-        const {source} = json ; 
+        const {source} = json ;
         console.log(source);
         console.log('creating workorder');
         //send work order
         const compilerSocket = connectedCompilers[Math.floor(Math.random()*connectedCompilers.length)];
-        workM.createWorkOrder(ws, compilerSocket, source); 
+        workM.createWorkOrder(ws, compilerSocket, source);
       }
       if(ws.type == 'compiler'){
         const {workID, stdout, stderr} = json ;
@@ -56,20 +58,20 @@ wss.on('connection', (ws) => {
     }
   });
 
-  ws.on('pong', heartbeat) ; 
+  ws.on('pong', heartbeat) ;
 
   ws.on('close', () => {
     if(ws.type == 'compiler'){
         console.log('compiler disconnected') ;
         const index = connectedCompilers.findIndex(socket => ws == socket) ;
         if(index != -1)
-          connectedCompilers.splice(index, 1) ; 
+          connectedCompilers.splice(index, 1) ;
     }
     else if(ws.type == 'emitter'){
         console.log('emitter disconnected') ;
         const index = connectedEmitters.findIndex(socket => ws == socket) ;
         if(index != -1)
-          connectedEmitters.splice(index, 1) ; 
+          connectedEmitters.splice(index, 1) ;
     }
   }) ;
 
@@ -78,9 +80,9 @@ wss.on('connection', (ws) => {
   }
 
   ws.send(JSON.stringify({command: 'identify'}));
-  
+
   setTimeout(identifyResponseCheck, 10000) ; //10 seconds delay to get identity type 
-  console.log('client connected') ; 
+  console.log('client connected') ;
 
 });
 
@@ -95,7 +97,7 @@ const interval = setInterval(function ping() {
 
 wss.on('close', () => {
   clearInterval(interval) ;
-  console.log('server closed') ; 
+  console.log('server closed') ;
 }) ;
 
 
