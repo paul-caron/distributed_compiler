@@ -54,7 +54,15 @@ wss.on('connection', (ws) => {
         console.log(source);
         console.log('creating workorder');
         const compilerSocket = getAvailableCompiler() ; 
-        workM.createWorkOrder(ws, compilerSocket, source);
+        if(compilerSocket){
+          workM.createWorkOrder(ws, compilerSocket, source);
+        }
+        else{
+          //TODO implement queuing
+
+          //no queuing for now, so will just return error
+          ws.send(JSON.stringify({command:'compile', stdout:'', stderr:'All compilers are currently busy. Please try again later.'})) ;
+        }
       }
       if(ws.type == 'compiler'){
         const {workID, stdout, stderr} = json ;
