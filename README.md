@@ -7,6 +7,11 @@ chmod 777 install.sh
 ./install.sh
 ```
 
+build the compiling docker image:
+```sh
+(cd client/ && ./build_docker_image.sh
+```
+
 ## requirements
 
 - nodejs
