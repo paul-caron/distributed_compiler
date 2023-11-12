@@ -16,3 +16,8 @@ echo 'PORT=' $port >> ./client/.env
 echo 'PORT=' $port >> ./server/.env
 echo 'PORT=' $port >> ./emitter/.env
 
+#install node modules
+(cd ./client && npm install)
+(cd ./emitter && npm install)
+(cd ./server && npm install)
+
