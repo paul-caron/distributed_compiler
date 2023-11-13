@@ -1,6 +1,5 @@
 const sourceCode = `
-echo "Hello World, it's a some kind of shell"
-ls source/
+console.log('NODEJS is here') ;
 ` ;
 
 const {WebSocket} = require('ws') ;
@@ -29,7 +28,7 @@ const connect = async () => {
        //server validated identification and awaits a job order
        case 'proceed':  console.log('identification succeeded') ;
                         console.log('sending code for compilation') ;
-                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'sh'}));
+                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'nodejs'}));
                         console.log('source code sent: ', sourceCode) ;
                         break;
        //server returns the output of the sourceCode execution

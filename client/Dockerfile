@@ -16,5 +16,7 @@ RUN apk add go
 
 RUN apk add openjdk11
 
+RUN apk add nodejs npm
+
 COPY ./compilation_scripts /compilation_scripts/
 RUN chmod 777 /compilation_scripts/*

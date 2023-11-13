@@ -16,6 +16,7 @@ const compile = (source, language) => {
     'go': 'go',
     'java': 'java',
     'sh': 'sh',
+    'nodejs': 'js',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
