@@ -10,6 +10,7 @@ const compile = (source, language) => {
     'c': 'c',
     'cpp': 'cpp',
     'python': 'py',
+    'perl': 'pl',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
@@ -18,6 +19,8 @@ const compile = (source, language) => {
   child_process.execSync(`docker run ${network} ${mount} --rm ${image} /compilation_scripts/${language}.sh `) ;
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
+  fs.writeFileSync(`./source/stdout`, '');
+  fs.writeFileSync(`./source/stderr`, '');
   return {stdout: stdout, stderr: stderr} ;
 }
 

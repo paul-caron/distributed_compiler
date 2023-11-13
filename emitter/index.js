@@ -1,4 +1,15 @@
 const sourceCode = `
+#!/usr/bin/perl
+
+# Modules used
+use strict;
+use warnings;
+
+# Print function
+print("Hello World from Perl\n");
+
+` ;
+const sourceCode3 = `
 #include <iostream>
 int main()
 {
@@ -41,7 +52,7 @@ const connect = async () => {
        //server validated identification and awaits a job order
        case 'proceed':  console.log('identification succeeded') ;
                         console.log('sending code for compilation') ;
-                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'cpp'}));
+                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'perl'}));
                         console.log('source code sent: ', sourceCode) ;
                         break;
        //server returns the output of the sourceCode execution
