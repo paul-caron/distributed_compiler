@@ -36,7 +36,7 @@ const compile = (source, language) => {
   const stderr = fs.readFileSync('./source/stderr').toString()
   fs.writeFileSync(`./source/stdout`, '');
   fs.writeFileSync(`./source/stderr`, '');
-  child_process.execSync(`rm ./source/*`) ;
+  child_process.execSync(`rm -rf ./source/*`) ;
   return {stdout: stdout, stderr: stderr} ;
 }
 
