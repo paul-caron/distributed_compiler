@@ -12,5 +12,7 @@ RUN apk add ruby
 
 RUN apk add rust
 
+RUN apk add go
+
 COPY ./compilation_scripts /compilation_scripts/
 RUN chmod 777 /compilation_scripts/*

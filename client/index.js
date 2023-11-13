@@ -13,6 +13,7 @@ const compile = (source, language) => {
     'perl': 'pl',
     'ruby': 'rb',
     'rust': 'rs',
+    'go': 'go',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
