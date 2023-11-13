@@ -14,6 +14,7 @@ const compile = (source, language) => {
     'ruby': 'rb',
     'rust': 'rs',
     'go': 'go',
+    'java': 'java',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
@@ -50,8 +51,12 @@ const connect = () => {
       case 'compile':  console.log('server requesting a compilation') ;
                        const {workID, source, language} = json ;
                        console.log(workID, 'source code: ', source, language) ;
-                       const {stdout, stderr} = compile(source, language) ;
-                       ws.send(JSON.stringify({command:'compile', workID: workID, stdout: stdout, stderr: stderr})) ; 
+                       try {
+                         const {stdout, stderr} = compile(source, language) ;
+                         ws.send(JSON.stringify({command:'compile', workID: workID, stdout: stdout, stderr: stderr})) ; 
+                       } catch(e){
+                         ws.send(JSON.stringify({command:'compile', workID: workID, stdout: '', stderr: 'an error occured'})) ; 
+                       }
                        break;
     }
   });
