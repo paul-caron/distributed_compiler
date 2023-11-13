@@ -50,12 +50,12 @@ wss.on('connection', (ws) => {
     }
     if(json.command == 'compile'){
       if(ws.type == 'emitter'){
-        const {source} = json ;
-        console.log(source);
+        const {source, language} = json ;
+        console.log(source, language);
         console.log('creating workorder');
-        const compilerSocket = getAvailableCompiler() ; 
+        const compilerSocket = getAvailableCompiler() ;
         if(compilerSocket){
-          workM.createWorkOrder(ws, compilerSocket, source);
+          workM.createWorkOrder(ws, compilerSocket, source, language);
         }
         else{
           //TODO implement queuing

@@ -5,17 +5,17 @@ const dotenv = require("dotenv") ;
 dotenv.config();
 
 
-const compile = (source) => {
-//  const compile_command = ` clang -O1 -o ./source/main ./source/main.c 2> ./source/stderr 1> ./source/stdout` ;
-//  const execute_command = ` ./source/main ./source/main.c 2>> ./source/stderr 1>> ./source/stdout ` ;
+const compile = (source, language) => {
+  const fileEnding = {
+    'c': 'c',
+    'cpp': 'cpp',
+    'python': 'py',
+  } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
-  fs.writeFileSync("./source/main.c", source);
-  child_process.execSync(`docker run ${network} ${mount} --rm ${image} /compilation_scripts/c.sh `) ;
-
-//  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${compile_command} `) ;
-//  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${execute_command} `) ;
+  fs.writeFileSync(`./source/main.${fileEnding[language]}`, source);
+  child_process.execSync(`docker run ${network} ${mount} --rm ${image} /compilation_scripts/${language}.sh `) ;
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
   return {stdout: stdout, stderr: stderr} ;
@@ -42,9 +42,9 @@ const connect = () => {
                        break;
       case 'proceed':  console.log('identification succeeded'); break;
       case 'compile':  console.log('server requesting a compilation') ;
-                       const {workID, data} = json ;
-                       console.log(workID, 'source code: ', data) ;
-                       const {stdout, stderr} = compile(data) ;
+                       const {workID, source, language} = json ;
+                       console.log(workID, 'source code: ', source, language) ;
+                       const {stdout, stderr} = compile(source, language) ;
                        ws.send(JSON.stringify({command:'compile', workID: workID, stdout: stdout, stderr: stderr})) ; 
                        break;
     }

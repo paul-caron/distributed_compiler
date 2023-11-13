@@ -1,4 +1,12 @@
 const sourceCode = `
+#include <iostream>
+int main()
+{
+  std::cout << "hello world";
+  return 0;
+}
+` ;
+const sourceCode2 = `
 #include <stdio.h>
 int main()
 {
@@ -33,7 +41,7 @@ const connect = async () => {
        //server validated identification and awaits a job order
        case 'proceed':  console.log('identification succeeded') ;
                         console.log('sending code for compilation') ;
-                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode}));
+                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'cpp'}));
                         console.log('source code sent: ', sourceCode) ;
                         break;
        //server returns the output of the sourceCode execution
