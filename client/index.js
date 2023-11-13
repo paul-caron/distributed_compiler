@@ -21,13 +21,16 @@ const compile = (source, language) => {
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
-  const timeout = 1 ;
-  const capdrops =  `--cap-drop ALL `; //`--cap-drop SYS_CHROOT --cap-drop NET_BIND_SERVICE`;
+  const timeout = 12 ;
+  const capdrops =  `--cap-drop ALL `;
+  const memory = `-m 512m` ;
+  const cpus = `--cpus=2` ;
   fs.writeFileSync(`./source/main.${fileEnding[language]}`, source);
   try{
-    child_process.execSync(`docker run ${network} ${mount} --rm ${capdrops} ${image} timeout ${timeout} /compilation_scripts/${language}.sh `) ;
+    child_process.execSync(`timeout -s SIGKILL ${timeout} docker run ${cpus} ${memory} ${network} ${mount} --rm ${capdrops} ${image} /compilation_scripts/${language}.sh `) ;
   }catch(e){
     console.log(e) ;
+    fs.writeFileSync(`./source/stderr`, 'error occurred');
   }
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
