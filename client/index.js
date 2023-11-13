@@ -21,8 +21,14 @@ const compile = (source, language) => {
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
+  const timeout = 4 ;
+  const capdrops =  `--cap-drop ALL `; //`--cap-drop SYS_CHROOT --cap-drop NET_BIND_SERVICE`;
   fs.writeFileSync(`./source/main.${fileEnding[language]}`, source);
-  child_process.execSync(`docker run ${network} ${mount} --rm ${image} /compilation_scripts/${language}.sh `) ;
+  try{
+    child_process.execSync(`docker run ${network} ${mount} --rm ${capdrops} ${image} timeout ${timeout} /compilation_scripts/${language}.sh `) ;
+  }catch(e){
+    console.log(e) ;
+  }
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
   fs.writeFileSync(`./source/stdout`, '');
