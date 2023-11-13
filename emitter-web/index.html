@@ -2,11 +2,26 @@
 <html>
 <head></head>
 <body>
+<textArea id="source">
+ls
+</textArea>
+<select name="language-select" id="language-select">
+  <option value="sh">Shell</option>
+  <option value="c">C</option>
+  <option value="cpp">CPP</option>
+  <option value="java">Java</option>
+  <option value="python">Python</option>
+  <option value="ruby">Ruby</option>
+</select>
+
+<button onclick="connect(); output.innerText=''">compile</button>
+
 <pre id="output" ></pre>
+
 <script>
 
-
 const output = document.querySelector("#output") ; 
+const language_select = document.querySelector('#language-select') ; 
 
 const old = console.log.bind(console) ;
 const olderror = console.error.bind(console) ;
@@ -19,15 +34,9 @@ console.error = (item) => {
   output.innerText += item + '\n' ;
 }
 
-const sourceCode = `
-echo 'test'
-ls -la 
-pwd
-cat .dockerenv
-` ;
-
-
 const connect = async () => {
+   const sourceCode = document.querySelector('#source').value ;
+
    const ws = new WebSocket(`ws://localhost:8080`);
 
    ws.onerror = (e) =>{
@@ -50,7 +59,7 @@ const connect = async () => {
        //server validated identification and awaits a job order
        case 'proceed':  console.log('identification succeeded') ;
                         console.log('sending code for compilation') ;
-                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: 'sh'}));
+                        await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: language_select.value }));
                         console.log('source code sent: ' + sourceCode) ;
                         break;
        //server returns the output of the sourceCode execution
@@ -67,7 +76,6 @@ const connect = async () => {
    };
 }
 
-connect() ;
 </script>
 </body>
 </html>
