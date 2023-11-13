@@ -15,6 +15,7 @@ const compile = (source, language) => {
     'rust': 'rs',
     'go': 'go',
     'java': 'java',
+    'sh': 'sh',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
