@@ -21,7 +21,7 @@ const compile = (source, language) => {
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
-  const timeout = 12 ;
+  const timeout = 20 ;
   const capdrops =  `--cap-drop ALL `;
   const memory = `-m 512m` ;
   const cpus = `--cpus=2` ;
@@ -36,6 +36,7 @@ const compile = (source, language) => {
   const stderr = fs.readFileSync('./source/stderr').toString()
   fs.writeFileSync(`./source/stdout`, '');
   fs.writeFileSync(`./source/stderr`, '');
+  child_process.execSync(`rm ./source/*`) ;
   return {stdout: stdout, stderr: stderr} ;
 }
 
