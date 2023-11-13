@@ -21,7 +21,7 @@ const compile = (source, language) => {
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
-  const timeout = 4 ;
+  const timeout = 1 ;
   const capdrops =  `--cap-drop ALL `; //`--cap-drop SYS_CHROOT --cap-drop NET_BIND_SERVICE`;
   fs.writeFileSync(`./source/main.${fileEnding[language]}`, source);
   try{
