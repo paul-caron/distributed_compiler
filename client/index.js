@@ -12,6 +12,7 @@ const compile = (source, language) => {
     'python': 'py',
     'perl': 'pl',
     'ruby': 'rb',
+    'rust': 'rs',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
