@@ -11,6 +11,7 @@ const compile = (source, language) => {
     'cpp': 'cpp',
     'python': 'py',
     'perl': 'pl',
+    'ruby': 'rb',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
