@@ -6,15 +6,16 @@ dotenv.config();
 
 
 const compile = (source) => {
-  const compile_command = ` clang -O1 -o ./source/main ./source/main.c 2> ./source/stderr 1> ./source/stdout` ;
-  const execute_command = ` ./source/main ./source/main.c 2>> ./source/stderr 1>> ./source/stdout ` ;
+//  const compile_command = ` clang -O1 -o ./source/main ./source/main.c 2> ./source/stderr 1> ./source/stdout` ;
+//  const execute_command = ` ./source/main ./source/main.c 2>> ./source/stderr 1>> ./source/stdout ` ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
   const image = `compiler_client_compiler` ;
   fs.writeFileSync("./source/main.c", source);
+  child_process.execSync(`docker run ${network} ${mount} --rm ${image} /compilation_scripts/c.sh `) ;
 
-  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${compile_command} `) ;
-  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${execute_command} `) ;
+//  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${compile_command} `) ;
+//  child_process.execSync(`docker run ${network} ${mount} --rm ${image} ${execute_command} `) ;
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
   return {stdout: stdout, stderr: stderr} ;
