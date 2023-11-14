@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head></head>
+<head>
+<link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-dark.min.css" rel="stylesheet" />
+<style>
+*{
+text-align: center; 
+font-family: monospace;
+}
+</style>
+</head>
 <body>
-<textArea id="source">
+<label >Source Code</label>
+<br />
+<pre>
+<code rows="30" cols="80" id="source" class="language-c" contentEditable=true style="overflow-y:scroll;background-color=#777;" onfocusout="Prism.highlightElement(this)">
+</code>
+</pre>
+<br />
+<label >Inputs: stdin</label>
+<br />
+<textArea id="stdin" rows="3" cols="80" ></textArea>
+<br />
 
-</textArea>
-<select name="language-select" id="language-select">
+<select name="language-select" id="language-select" oninput="document.querySelector('#source').className='language-'+this.value;">
   <option value="c">C</option>
   <option value="clojure">Clojure</option>
   <option value="cpp">CPP</option>
@@ -41,7 +59,7 @@ console.error = (item) => {
 }
 
 const connect = async () => {
-   const sourceCode = document.querySelector('#source').value ;
+   const sourceCode = document.querySelector('#source').innerText ;
 
    const ws = new WebSocket(`ws://localhost:8080`);
 
@@ -66,7 +84,7 @@ const connect = async () => {
        case 'proceed':  console.log('identification succeeded') ;
                         console.log('sending code for compilation') ;
                         await ws.send(JSON.stringify({command: 'compile', source: sourceCode, language: language_select.value }));
-                        console.log('source code sent: ' + sourceCode) ;
+                        console.log('source code sent') ;
                         break;
        //server returns the output of the sourceCode execution
        case 'compile':  const {stdout, stderr} = json ;
@@ -82,6 +100,10 @@ const connect = async () => {
    };
 }
 
+
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@v1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@v1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 </html>
