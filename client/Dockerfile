@@ -16,6 +16,9 @@ RUN apk add go
 
 RUN apk add openjdk11
 
+RUN apk add clojure
+RUN apk add leiningen
+
 RUN apk add nodejs npm
 
 
