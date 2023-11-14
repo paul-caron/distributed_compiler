@@ -23,5 +23,7 @@ RUN apk add nodejs npm
 
 RUN apk add octave
 
+RUN apk add R
+
 COPY ./compilation_scripts /compilation_scripts/
 RUN chmod 777 /compilation_scripts/*

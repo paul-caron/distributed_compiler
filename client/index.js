@@ -19,6 +19,7 @@ const compile = (source, language) => {
     'nodejs': 'js',
     'clojure': 'clj',
     'octave': 'm',
+    'r': 'r',
   } ;
   const mount = `--mount type=bind,source="$(pwd)"/source,target=/source` ; 
   const network = `--network none` ;
