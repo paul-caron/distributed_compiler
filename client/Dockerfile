@@ -21,6 +21,7 @@ RUN apk add leiningen
 
 RUN apk add nodejs npm
 
+RUN apk add octave
 
 COPY ./compilation_scripts /compilation_scripts/
 RUN chmod 777 /compilation_scripts/*
