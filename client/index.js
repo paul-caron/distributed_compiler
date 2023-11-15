@@ -33,7 +33,7 @@ const compile = (source, language) => {
     child_process.execSync(`timeout -s SIGKILL ${timeout} docker run ${cpus} ${memory} ${network} ${mount} --rm ${capdrops} ${image} /compilation_scripts/${language}.sh `) ;
   }catch(e){
     console.log(e) ;
-    fs.writeFileSync(`./source/stderr`, 'error occurred');
+    child_process.execSync(`echo 'error occured' >> ./source/stderr`) ;
   }
   const stdout = fs.readFileSync('./source/stdout').toString()
   const stderr = fs.readFileSync('./source/stderr').toString()
