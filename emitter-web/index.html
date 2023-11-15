@@ -13,16 +13,30 @@
   height: 500px;
 }
 
-#editing, #highlighting, #highlighting * {
+#editing, #highlighting, #highlighting * , #line-numbers{
   font-size: 15pt;
   font-family: monospace;
   line-height: 20pt;
 }
 
-#editing, #highlighting {
+#editing, #highlighting, #line-numbers {
   position: absolute;
   top: 16px;
   left: 16px;
+}
+
+#line-numbers {
+  display: block;
+  margin: 10px 0px 0px 0px;
+  padding: 10px 0px 0px 0px;
+  border: 10px;
+
+  width: 3em;
+  height: 500px;
+
+  z-index: 1;
+  background-color: #0000;
+  color: #fff7;
 }
 
 #editing {
@@ -37,25 +51,30 @@
 }
 
 #editing, #highlighting-content {
-  display:block;
+  display: block;
   margin: 10px;
   padding: 10px;
   border: 10px;
 }
 
-#editing {
+#editing , textarea{
   resize: none;
 }
 
-#editing, #highlighting , textarea{
+#editing, #highlighting , textarea, #line-numbers{
   overflow: auto;
   white-space: pre;
 }
 
-#language-select , #compile-button, #output, #stdin{
+#language-select, #theme-select,  #compile-button, #output, #stdin{
   position: relative;
   top: 532px;
 }
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
 
 </style>
 </head>
@@ -65,8 +84,13 @@
 <textarea id="editing"  spellcheck="false" oninput="update(this.value); sync_scroll(this);" onscroll="sync_scroll(this);" ></textarea>
 
 <pre id="highlighting" aria-hidden="true"><code class="language-c" id="highlighting-content"></code></pre>
+<pre id="line-numbers" >1
+2
+3
+4
+5</pre>
 
-<textArea id="stdin" rows="2" style="resize: none;" ></textArea>
+<textArea id="stdin" rows="2" style="resize: none;" placeholder="stdin"></textArea>
 
 <select name="language-select" id="language-select" oninput="document.querySelector('#highlighting-content').className='language-'+this.value; Prism.highlightElement(document.querySelector('#highlighting-content'));">
   <option value="c">C</option>
@@ -83,17 +107,21 @@
   <option value="sh">Shell</option>
 </select>
 
+<select name="theme-select" id="theme-select" oninput=";">
+  <option value="prism">Prism</option>
+  <option value="prism-dark">Dark</option>
+</select>
+
 <button id="compile-button" onclick="connect(); output.innerText=''">compile</button>
 
-<pre id="output" ></pre>
+<textarea id="output" rows="3" ></textarea>
 
 <script>
 
 function update(text) {
   const code_element = document.querySelector("#highlighting-content");
-    // Handle final newlines (see article)
-  if(text[text.length-1] == "\n") { // If the last character is a newline character
-    text += " "; // Add a placeholder space character to the final line 
+  if(text[text.length-1] == "\n") {
+    text += " ";
   }
   code_element.innerHTML = text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;").replace(new RegExp(">","g"), "&gt;");
   Prism.highlightElement(code_element);
@@ -112,11 +140,11 @@ const old = console.log.bind(console) ;
 const olderror = console.error.bind(console) ;
 
 console.log = (item) => {
-  output.innerText += item + '\n' ;
+  output.value += item + '\n' ;
 }
 
 console.error = (item) => {
-  output.innerText += item + '\n' ;
+  output.value += item + '\n' ;
 }
 
 const connect = async () => {
