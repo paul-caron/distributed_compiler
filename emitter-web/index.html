@@ -84,11 +84,7 @@ textarea:focus, input:focus{
 <textarea id="editing"  spellcheck="false" oninput="update(this.value); sync_scroll(this);" onscroll="sync_scroll(this);" ></textarea>
 
 <pre id="highlighting" aria-hidden="true"><code class="language-c" id="highlighting-content"></code></pre>
-<pre id="line-numbers" >1
-2
-3
-4
-5</pre>
+<pre id="line-numbers" >1</pre>
 
 <textArea id="stdin" rows="2" style="resize: none;" placeholder="stdin"></textArea>
 
@@ -125,12 +121,24 @@ function update(text) {
   }
   code_element.innerHTML = text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;").replace(new RegExp(">","g"), "&gt;");
   Prism.highlightElement(code_element);
+
+  //count number of newlines '\n'
+  let count = text.split('\n').length  ;
+  let lnContent = "" ;
+  for(lineN=1;count--;lineN++)
+    lnContent += lineN + '\n' ;
+  document.querySelector("#line-numbers").innerText = lnContent ;
 }
 
 function sync_scroll(element) {
   const code_element = document.querySelector("#highlighting");
   code_element.scrollTop = element.scrollTop;
   code_element.scrollLeft = element.scrollLeft;
+
+  const lines_element = document.querySelector("#line-numbers");
+  lines_element.scrollTop = element.scrollTop;
+  lines_element.scrollLeft = element.scrollLeft;
+  
 }
 
 const output = document.querySelector("#output") ; 
