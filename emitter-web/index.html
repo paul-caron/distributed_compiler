@@ -2,7 +2,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
-<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-dark.min.css" rel="stylesheet" />
+<link id="prism-css" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet" />
 <style>
 
 #editing, #highlighting, #highlighting * {
@@ -43,7 +43,7 @@
   z-index: 1;
   background-color: #0000;
   color: #0000;
-  caret-color: white;
+  caret-color: #777f;
 }
 
 #highlighting {
@@ -103,9 +103,9 @@ textarea:focus, input:focus{
   <option value="sh">Shell</option>
 </select>
 
-<select name="theme-select" id="theme-select" oninput=";">
-  <option value="prism">Prism</option>
-  <option value="prism-dark">Dark</option>
+<select name="theme-select" id="theme-select" oninput="document.querySelector('#prism-css').href=this.value;">
+  <option value="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">Prism</option>
+  <option value="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-dark.min.css">Dark</option>
 </select>
 
 <button id="compile-button" onclick="connect(); output.innerText=''">compile</button>
