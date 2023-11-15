@@ -4,26 +4,71 @@
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.css">
 <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-dark.min.css" rel="stylesheet" />
 <style>
-*{
-text-align: center; 
-font-family: monospace;
+
+#editing, #highlighting, #highlighting * {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  width: calc(100% - 32px);
+  height: 500px;
 }
+
+#editing, #highlighting, #highlighting * {
+  font-size: 15pt;
+  font-family: monospace;
+  line-height: 20pt;
+}
+
+#editing, #highlighting {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+#editing {
+  z-index: 1;
+  background-color: #0000;
+  color: #0000;
+  caret-color: white;
+}
+
+#highlighting {
+  z-index: 0;
+}
+
+#editing, #highlighting-content {
+  display:block;
+  margin: 10px;
+  padding: 10px;
+  border: 10px;
+}
+
+#editing {
+  resize: none;
+}
+
+#editing, #highlighting {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+#language-select , #compile-button, #output, #stdin{
+  position: relative;
+  top: 532px;
+}
+
 </style>
 </head>
 <body>
-<label >Source Code</label>
-<br />
-<pre>
-<code rows="30" cols="80" id="source" class="language-c" contentEditable=true style="overflow-y:scroll;background-color=#777;" onfocusout="Prism.highlightElement(this)">
-</code>
-</pre>
-<br />
-<label >Inputs: stdin</label>
-<br />
-<textArea id="stdin" rows="3" cols="80" ></textArea>
-<br />
 
-<select name="language-select" id="language-select" oninput="document.querySelector('#source').className='language-'+this.value;">
+
+<textarea id="editing" wrap="off" spellcheck="false" oninput="update(this.value); sync_scroll(this);" onscroll="sync_scroll(this);" ></textarea>
+
+<pre id="highlighting" aria-hidden="true"><code class="language-c" id="highlighting-content"></code></pre>
+
+<textArea id="stdin" rows="2" style="resize: none;" ></textArea>
+
+<select name="language-select" id="language-select" oninput="document.querySelector('#highlighting-content').className='language-'+this.value; Prism.highlightElement(document.querySelector('#highlighting-content'));">
   <option value="c">C</option>
   <option value="clojure">Clojure</option>
   <option value="cpp">CPP</option>
@@ -38,11 +83,23 @@ font-family: monospace;
   <option value="sh">Shell</option>
 </select>
 
-<button onclick="connect(); output.innerText=''">compile</button>
+<button id="compile-button" onclick="connect(); output.innerText=''">compile</button>
 
 <pre id="output" ></pre>
 
 <script>
+
+function update(text) {
+  const code_element = document.querySelector("#highlighting-content");
+  code_element.innerHTML = text.replace(new RegExp("&", "g"), "&amp;").replace(new RegExp("<", "g"), "&lt;").replace(new RegExp(">","g"), "&gt;");
+  Prism.highlightElement(code_element);
+}
+
+function sync_scroll(element) {
+  const code_element = document.querySelector("#highlighting");
+  code_element.scrollTop = element.scrollTop;
+  code_element.scrollLeft = element.scrollLeft;
+}
 
 const output = document.querySelector("#output") ; 
 const language_select = document.querySelector('#language-select') ; 
@@ -59,7 +116,7 @@ console.error = (item) => {
 }
 
 const connect = async () => {
-   const sourceCode = document.querySelector('#source').innerText ;
+   const sourceCode = document.querySelector('#editing').value.replace(new RegExp(String.fromCharCode(0xA0), "g"), " ") ;
 
    const ws = new WebSocket(`ws://localhost:8080`);
 
