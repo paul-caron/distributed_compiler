@@ -18,7 +18,7 @@ class WorkManager{
     const wo = this.workOrders.get(workID) ;
     wo.emitter.send(JSON.stringify({command: 'compile', stdout: stdout, stderr: stderr}));
     this.workOrders.delete(workID) ;
-    wo.emitter.terminate() ;
+    wo.emitter.close() ;
     wo.compiler.busy = false ;
     console.log('completed workorder', workID) ;
   }
