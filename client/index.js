@@ -5,7 +5,7 @@ const dotenv = require("dotenv") ;
 dotenv.config();
 
 
-const compile = (source, language) => {
+const compile = (source, language, stdin) => {
   const fileEnding = {
     'c': 'c',
     'cpp': 'cpp',
@@ -29,6 +29,7 @@ const compile = (source, language) => {
   const memory = `-m 512m` ;
   const cpus = `--cpus=2` ;
   fs.writeFileSync(`./source/main.${fileEnding[language]}`, source);
+  fs.writeFileSync(`./source/stdin`, stdin);
   try{
     child_process.execSync(`timeout -s SIGKILL ${timeout} docker run ${cpus} ${memory} ${network} ${mount} --rm ${capdrops} ${image} /compilation_scripts/${language}.sh `) ;
   }catch(e){
@@ -64,10 +65,10 @@ const connect = () => {
                        break;
       case 'proceed':  console.log('identification succeeded'); break;
       case 'compile':  console.log('server requesting a compilation') ;
-                       const {workID, source, language} = json ;
+                       const {workID, source, language, stdin} = json ;
                        console.log(workID, 'source code: ', source, language) ;
                        try {
-                         const {stdout, stderr} = compile(source, language) ;
+                         const {stdout, stderr} = compile(source, language, stdin) ;
                          ws.send(JSON.stringify({command:'compile', workID: workID, stdout: stdout, stderr: stderr})) ; 
                        } catch(e){
                          ws.send(JSON.stringify({command:'compile', workID: workID, stdout: '', stderr: 'an error occured'})) ; 

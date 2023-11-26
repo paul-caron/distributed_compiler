@@ -5,14 +5,14 @@ class WorkManager{
   constructor(){
 
   }
-  createWorkOrder(emitterSocket, compilerSocket, source, language){
+  createWorkOrder(emitterSocket, compilerSocket, source, language, stdin){
     const workID = uuidv4() ;
     console.log('creating workID ', workID) ;
     this.workOrders.set(workID , {emitter: emitterSocket,
                              compiler: compilerSocket,
                              source: source, language: language} ) ;
     compilerSocket.busy = true ;
-    compilerSocket.send(JSON.stringify({command:'compile', workID: workID, source: source, language: language}));
+    compilerSocket.send(JSON.stringify({command:'compile', workID: workID, source: source, language: language, stdin: stdin}));
   }
   completeWorkOrder(workID, stdout, stderr){
     const wo = this.workOrders.get(workID) ;
